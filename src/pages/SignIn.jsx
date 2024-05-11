@@ -84,7 +84,7 @@ function SignIn() {
             <div className="flex justify-between">
               <h5>
                 Don't have an account?{" "}
-                <Link to="signup" className="text-red-400 font-bold">
+                <Link to="/signup" className="text-red-400 font-bold">
                   Register
                 </Link>
               </h5>
