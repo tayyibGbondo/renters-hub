@@ -18,9 +18,7 @@ export default function Header() {
         <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
           {/* LOGO */}
           <div>
-            <Link to="/">
-              <h1>LOGO</h1>
-            </Link>
+            <h1>LOGO</h1>
           </div>
 
           {/* NAV LINKS */}
@@ -29,7 +27,7 @@ export default function Header() {
               <Link
                 to="/"
                 className={`py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-                  pathMathRoute("/") && "text-black border-b-red-700"
+                  pathMathRoute("/") && "text-black border-b-red-500"
                 }`}
               >
                 Home
@@ -39,7 +37,7 @@ export default function Header() {
               <Link
                 to="/offer"
                 className={`py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-                  pathMathRoute("/offer") && "text-black border-b-red-700"
+                  pathMathRoute("/offer") && "text-black border-b-red-500"
                 }`}
               >
                 Offer
@@ -49,7 +47,7 @@ export default function Header() {
               <Link
                 to="/signin"
                 className={`py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-                  pathMathRoute("/signin") && "text-black border-b-red-700"
+                  pathMathRoute("/signin") && "text-black border-b-red-500"
                 }`}
               >
                 Sign In
