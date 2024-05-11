@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; //visable eye and hidden eye
 import { Link } from "react-router-dom";
+//firebase packa...
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 function SignUp() {
+  let auth = getAuth();
+
   // password toggle state
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,6 +32,17 @@ function SignUp() {
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  };
+
+  //Handle a submit
+  const handleSubmit = (e) => {
+    createUserWithEmailAndPassword(auth, email, password).then((res) => {
+      console.log("Login successful")
+      alert(res.message);
+    }).catch((err) => {
+      console.log("Error creating account")
+      alert(err.code);
+    })
   };
 
   return (
@@ -105,6 +120,7 @@ function SignUp() {
             {/* the button of the loginn form */}
             <button
               type="button"
+              onClick={handleSubmit}
               className="w-full bg-blue-600 text-white py-3 rounded-sm shadow-md hover:bg-blue-700 transition duration-150 ease-in-out active:bg-blue-800"
             >
               SIGN UP
