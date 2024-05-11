@@ -18,7 +18,7 @@ export default function Header() {
         <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
           {/* LOGO */}
           <div>
-            <h1>LOGO</h1>
+            <Link to="/">LOGO</Link>
           </div>
 
           {/* NAV LINKS */}
