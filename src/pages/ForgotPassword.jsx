@@ -1,4 +1,4 @@
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -39,6 +39,25 @@ export default function ForgotPassword() {
         console.log("password reset code not send");
       });
   }
+
+    //Continue with google
+    function continueWithGoogle() {
+      const auth = getAuth();
+      const googleProvider = new GoogleAuthProvider();
+  
+      //
+      signInWithPopup(auth, googleProvider)
+        .then(async (res) => {
+          // The signed-in user info.
+          const user = res.user;
+          console.log(user);
+          navigate("/");
+        })
+        .catch((err) => {
+          console.log(err.code);
+          console.log("Error signing with google provider");
+        });
+    }
 
   return (
     <section>
@@ -91,6 +110,7 @@ export default function ForgotPassword() {
 
             {/* the continue button with google */}
             <button
+            onClick={continueWithGoogle}
               type="button"
               className="w-full bg-red-600 text-white py-3 rounded-sm flex justify-center items-center space-x-2  hover:bg-red-700 transition duration-150 ease-in-out active:bg-red-800"
             >
