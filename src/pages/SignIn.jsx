@@ -3,7 +3,12 @@ import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; //visable eye and hidden eye
 import { Link, useNavigate } from "react-router-dom";
 //firebase auth
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 
 function SignIn() {
   //initialize useNaviagate
@@ -58,6 +63,32 @@ function SignIn() {
       .catch((error) => {
         console.log(error.code);
         alert(error.code);
+      });
+  }
+
+  //Continue with google
+  function continueWithGoogle() {
+    const auth = getAuth();
+    const googleProvider = new GoogleAuthProvider();
+
+    //
+    signInWithPopup(auth, googleProvider)
+      .then(async (res) => {
+        // The signed-in user info.
+        const user = res.user;
+        console.log(user);
+        navigate("/");
+
+        //Posting data into the database
+        await addDoc(collection(database, "users"), {
+          userId: user.uid,
+          fullname: user.displayName,
+          email: user.email,
+        });
+      })
+      .catch((err) => {
+        console.log(err.code);
+        console.log("Error signing with google provider");
       });
   }
 
@@ -144,6 +175,7 @@ function SignIn() {
             {/* the continue button with google */}
             <button
               type="button"
+              onClick={continueWithGoogle}
               className="w-full bg-red-600 text-white py-3 rounded-sm flex justify-center items-center space-x-2  hover:bg-red-700 transition duration-150 ease-in-out active:bg-red-800"
             >
               {" "}
