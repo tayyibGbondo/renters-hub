@@ -78,13 +78,6 @@ function SignIn() {
         const user = res.user;
         console.log(user);
         navigate("/");
-
-        //Posting data into the database
-        await addDoc(collection(database, "users"), {
-          userId: user.uid,
-          fullname: user.displayName,
-          email: user.email,
-        });
       })
       .catch((err) => {
         console.log(err.code);
