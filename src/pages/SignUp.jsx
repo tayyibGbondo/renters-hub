@@ -9,6 +9,8 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 
 function SignUp() {
@@ -64,10 +66,10 @@ function SignUp() {
         console.log(userCrediantials);
 
         //Posting data into the database
-       await addDoc(collection(database, "users"), {
+        await addDoc(collection(database, "users"), {
           userId: userCrediantials.uid,
           fullname: fullname,
-          email: email
+          email: email,
         });
 
         //navigating the user to main page if sign up  is successful
@@ -76,6 +78,32 @@ function SignUp() {
       .catch((err) => {
         console.log("Error creating account");
         alert(err.code);
+      });
+  }
+
+  //Continue with google
+  function continueWithGoogle() {
+    const auth = getAuth();
+    const googleProvider = new GoogleAuthProvider();
+
+    //
+    signInWithPopup(auth, googleProvider)
+      .then(async (res) => {
+        // The signed-in user info.
+        const user = res.user;
+        console.log(user);
+        navigate("/");
+
+        //Posting data into the database
+        await addDoc(collection(database, "users"), {
+          userId: user.uid,
+          fullname: user.displayName,
+          email: user.email,
+        });
+      })
+      .catch((err) => {
+        console.log(err.code);
+        console.log("Error signing with google provider");
       });
   }
 
@@ -170,6 +198,7 @@ function SignUp() {
             {/* the continue button with google */}
             <button
               type="button"
+              onClick={continueWithGoogle}
               className="w-full bg-red-600 text-white py-3 rounded-sm flex justify-center items-center space-x-2  hover:bg-red-700 transition duration-150 ease-in-out active:bg-red-800"
             >
               {" "}
