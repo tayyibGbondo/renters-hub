@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; //visable eye and hidden eye
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //firebase packa...
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { database } from "../firebaseConfig";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
 function SignUp() {
-  let auth = getAuth();
+  //navigation
+  const navigate = useNavigate();
 
   // password toggle state
   const [showPassword, setShowPassword] = useState(false);
@@ -34,16 +41,43 @@ function SignUp() {
     }));
   };
 
-  //Handle a submit
-  const handleSubmit = (e) => {
-    createUserWithEmailAndPassword(auth, email, password).then((res) => {
-      console.log("Login successful")
-      alert(res.message);
-    }).catch((err) => {
-      console.log("Error creating account")
-      alert(err.code);
-    })
-  };
+  // //Handle a submit
+  function onSubmit(e) {
+    e.preventDefault();
+
+    //formData validation
+    if (!fullname || !email || !password) {
+      return alert("please enter a full name");
+    }
+
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (res) => {
+        //udating the user
+        updateProfile(auth.currentUser, {
+          displayName: fullname,
+        });
+
+        //Getting the user crediantial details
+        const userCrediantials = res.user;
+
+        console.log(userCrediantials);
+
+        //Posting data into the database
+       await addDoc(collection(database, "users"), {
+          userId: userCrediantials.uid,
+          fullname: fullname,
+          email: email
+        });
+
+        //navigating the user to main page if sign up  is successful
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log("Error creating account");
+        alert(err.code);
+      });
+  }
 
   return (
     <section>
@@ -60,7 +94,7 @@ function SignUp() {
 
         {/* The form */}
         <div className="w-full md:w-[67%] lg:w-[40%]">
-          <form className="flex flex-col space-y-3">
+          <form onSubmit={onSubmit} className="flex flex-col space-y-3">
             {/* fullname */}
             <input
               type="text"
@@ -119,8 +153,8 @@ function SignUp() {
 
             {/* the button of the loginn form */}
             <button
-              type="button"
-              onClick={handleSubmit}
+              type="submit"
+              // onClick={handleSubmit}
               className="w-full bg-blue-600 text-white py-3 rounded-sm shadow-md hover:bg-blue-700 transition duration-150 ease-in-out active:bg-blue-800"
             >
               SIGN UP
