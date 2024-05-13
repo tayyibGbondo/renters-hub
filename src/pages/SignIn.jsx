@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; //visable eye and hidden eye
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+//firebase auth
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 function SignIn() {
+  //initialize useNaviagate
+  const navigate = useNavigate();
+
   // password toggle state
   const [showPassword, setShowPassword] = useState(false);
 
@@ -29,6 +34,33 @@ function SignIn() {
     }));
   };
 
+  function handleSignIn(e) {
+    e.preventDefault();
+
+    //Handling firebase authentication
+    const auth = getAuth();
+
+    //handing and validating form input
+    if (!email || !password) {
+      alert("fields cannot be empty");
+      return console.log("fields cannot be empty");
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+
+        //navigating the user after navigating
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error.code);
+        alert(error.code);
+      });
+  }
+
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Sign In</h1>
@@ -44,7 +76,7 @@ function SignIn() {
 
         {/* The form */}
         <div className="w-full md:w-[67%] lg:w-[40%]">
-          <form className="flex flex-col space-y-3">
+          <form onSubmit={handleSignIn} className="flex flex-col space-y-3">
             <input
               type="email"
               id="email"
@@ -96,7 +128,7 @@ function SignIn() {
 
             {/* the button of the loginn form */}
             <button
-              type="button"
+              type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-sm shadow-md hover:bg-blue-700 transition duration-150 ease-in-out active:bg-blue-800"
             >
               SIGN IN
@@ -104,7 +136,9 @@ function SignIn() {
 
             {/* or */}
             <div className="my-4 before:border-t flex before:flex-1 items-center after:border-t after:flex-1 ">
-              <p className="text-center font-semibold mx-4 before:border-gray-300">OR</p>
+              <p className="text-center font-semibold mx-4 before:border-gray-300">
+                OR
+              </p>
             </div>
 
             {/* the continue button with google */}
