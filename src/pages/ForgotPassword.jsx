@@ -1,8 +1,12 @@
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import React, { useState } from "react";
 import { FaGoogle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
+  //initialize useNaviagate
+  const navigate = useNavigate();
+
   //Form data state
   const [formData, setFormData] = useState({
     email: "",
@@ -19,6 +23,23 @@ export default function ForgotPassword() {
     }));
   };
 
+  //handle reset password
+  async function resetPassword(e) {
+    //handle page reload
+    e.preventDefault();
+    //firebase auth innitialization
+    const auth = getAuth();
+    await sendPasswordResetEmail(auth, email)
+      .then((res) => {
+        alert("verification code sent to email");
+        console.log(res);
+      })
+      .then((error) => {
+        alert(error.code);
+        console.log("password reset code not send");
+      });
+  }
+
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Forgot Password</h1>
@@ -34,7 +55,7 @@ export default function ForgotPassword() {
 
         {/* The form */}
         <div className="w-full md:w-[67%] lg:w-[40%]">
-          <form className="flex flex-col space-y-3">
+          <form onSubmit={resetPassword} className="flex flex-col space-y-3">
             <input
               type="email"
               id="email"
@@ -55,7 +76,7 @@ export default function ForgotPassword() {
 
             {/* the button of the loginn form */}
             <button
-              type="button"
+              type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-sm shadow-md hover:bg-blue-700 transition duration-150 ease-in-out active:bg-blue-800"
             >
               SEND RESET EMAIL
