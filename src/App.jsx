@@ -7,6 +7,7 @@ import Offers from "./pages/Offers";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Header from "./components/Header";
+import Middleware from "./middleware/Middleware";
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Middleware />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/offer" element={<Offers />} />
           <Route path="/signin" element={<SignIn />} />
