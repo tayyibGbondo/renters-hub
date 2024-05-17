@@ -44,7 +44,7 @@ export default function Profile() {
           displayName: name,
         });
 
-        //update data in firestore
+        //update data in firestore` 
         const docRef = doc(database, "users", auth.currentUser.uid);
         await updateDoc(collection(docRef), {
           fullname: name,
@@ -92,7 +92,7 @@ export default function Profile() {
               <p>
                 Do you want to change your name?{" "}
                 <span
-                  onClick={ toggleEdit  && onSubmit}
+                  onClick={toggleEdit && onSubmit}
                   className="text-red-600 hover:text-red-800 transition ease-in-out duration-200 ml-1 cursor-pointer"
                 >
                   {updateProfile ? "Update" : "Edit"}

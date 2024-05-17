@@ -1,9 +1,27 @@
-import React from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 export default function Header() {
   const location = useLocation();
+
+  //Initializing the firebase Auth
+  const auth = getAuth();
+
+  //Creating a hoock to make page dynamic
+  const [pageState, setPageState] = useState("Sign In");
+
+  //the use effcet dynamically change the auth state
+  useState(() => {
+onAuthStateChanged(auth, (user)=> {
+  if(user){
+    setPageState("Profile")
+  }else{
+    setPageState("Sign In")
+  }
+})
+  }, [auth]);
 
   // Function to determine the route path
   function pathMathRoute(route) {
@@ -45,12 +63,12 @@ export default function Header() {
             </li>
             <li>
               <Link
-                to="/signin"
+                to="/profile"
                 className={`py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-                  pathMathRoute("/signin") && "text-black border-b-red-500"
+                  pathMathRoute("/profile") && "text-black border-b-red-500"
                 }`}
               >
-                Sign In
+                {pageState}
               </Link>
             </li>
           </ul>
